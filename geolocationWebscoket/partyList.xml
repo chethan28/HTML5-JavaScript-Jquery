@@ -1,0 +1,32 @@
+<senators>
+	<senator>
+		<name>john</name>
+		<party>Democrat</party>
+		
+	</senator>
+	<senator>
+		<name>Mccain</name>
+		<party>Republican</party>
+		
+	</senator>
+	<senator>
+		<name>obama</name>
+		<party>Democrat</party>
+		
+	</senator>
+	<senator>
+		<name>jindal</name>
+		<party>Republican</party>
+		
+	</senator>
+	<senator>
+		<name>clinton</name>
+		<party>Democrat</party>
+		
+	</senator>
+	<senator>
+		<name>bhoner</name>
+		<party>Republican</party>
+		
+	</senator>
+</senators>
