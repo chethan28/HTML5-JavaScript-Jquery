@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <title>jQuery UI Example Page</title>
+        <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.23.custom.css" 
+                rel="stylesheet" />
+        <script type="text/javascript" 
+                src="js/jquery-1.8.0.min.js"></script>
+        <script type="text/javascript" 
+                src="js/jquery-ui-1.8.23.custom.min.js"></script>
+        
+        <script type="text/javascript" src="js/jquery.cycle.all.js"></script>
+          <style type="text/css">
+
+        .wrappedElement {
+          border: 1px solid red;
+          border-width: 2px;
+        }
+
+      
+        </style> 
+        
+        <script type="text/javascript">
+
+            var items= [];
+            var result=[]; 
+            $(function() {
+
+                // load the images based on user's input
+                $("#loadButton").click(function() {
+
+                    // clear the current images
+                    $('#images').html('');
+                    $('#images').removeAttr('style');
+                    $('#images').cycle("destroy");
+
+                    // get user input
+                    var tag = $('#tag').val();
+
+                     $.ajax({
+                    url : "cgi-bin/getData.php",
+                    data : {url : "http://kalathur.com/food/calories.xml"},
+                    complete : function(xhr, result) {
+                        if (result != "success")
+                            return;
+                        var response = xhr.responseXML;
+                        // for each <song> element
+                        $(response).find("item").each (function() {
+                            var size = $(this).find("size").text();
+                            var name = $(this).find("name").text();
+                            var calories = $(this).find("cals").text();
+                            var item = 
+                                { label : name, 
+                                  value : calories,
+                                  data : {size : size, name : name, 
+                                        calories : calories}};
+                           items.push(item); 
+                        });
+                      
+                      console.log(items);
+                    }
+                 })
+                   
+                result=$.grep(items, 
+                        function(value,index){
+                            return (value.label.toLowerCase().indexOf(
+                                tag.toLowerCase()) > -1);
+                        })
+                    console.log(result); 
+                     
+
+                    for ( var index=0 ; index<result.length; index++){
+                            
+                            console.log("inside loop");
+                            $('#images').append("<div id=i"+index+"></div>");
+                            $('#i'+index).attr({"width":200,"height":200});
+                            $('#i'+index).append("<label>Name :</label>");
+                            $('#i'+index).append("<output>"+result[index].label+"</output>");
+                            $('#i'+index).append("<br></br>");
+                            $('#i'+index).append("<label>Serving Size:</label>");
+                            $('#i'+index).append("<output>"+result[index].data.size+"</output>");
+                            $('#i'+index).append("<br></br>");
+
+                            //$('#i'+index).append("<p></p>");
+                            $('#i'+index).append("<label>Calories :</label>");
+                            $('#i'+index).append("<output>"+result[index].data.calories+"</output>");
+                           // $('#i'+index).append("<p></p>");
+                            $('#i'+index).append("<br></br>");
+                            $('#i'+index).addClass("wrappedElement");
+       
+                    }
+             
+            });
+
+                // cycle through the images
+            $("#cycleButton").click(function() {
+
+                    $('#images').cycle({
+                        fx : 'shuffle',
+                        shuffle : {
+                            top : -230,
+                            left : 230
+                        },
+                        speed : 300,
+                        timeout : 1000
+                    });
+                })
+            });
+        </script>
+        
+        <style>
+            #images img { border:none;}
+        </style>
+    </head>
+    <body>
+        <h1>JQuery Nutrition Cycle</h1>
+        
+        <div id="header">
+            <label for="tag">Tag:</label>
+            <input id="tag" value="raw"></input>
+            <button id="loadButton">Load</button>
+            <button id="cycleButton">Cycle</button>
+        </div>
+        <p>
+        
+        <div id="images">
+            
+        </div>  
+    </body>
+</html>
+
+

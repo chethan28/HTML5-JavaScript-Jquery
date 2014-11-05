@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <title>jQuery UI Example - Autocomplete</title>
+        <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.23.custom.css" 
+                rel="stylesheet" />
+        <script type="text/javascript" 
+                src="js/jquery-1.8.0.min.js"></script>
+        <script type="text/javascript" 
+                src="js/jquery-ui-1.8.23.custom.min.js"></script>
+                
+        <script type="text/javascript">
+            // array of JSON objects
+            var items= [];
+             
+            $(function() {
+                // disable the input until data is loaded
+                $('#target').attr("disabled", "disabled");
+                // make the ajax request
+                $.ajax({
+                    url : "cgi-bin/getData.php",
+                    data : {url : "http://kalathur.com/food/calories.xml"},
+                    complete : function(xhr, result) {
+                        if (result != "success")
+                            return;
+                        var response = xhr.responseXML;
+                        // for each <song> element
+                        $(response).find("item").each (function() {
+                            var size = $(this).find("size").text();
+                            var name = $(this).find("name").text();
+                            var calories = $(this).find("cals").text();
+                            var item = 
+                                { label : name, 
+                                  value : name,
+                                  data : {size : size, name : name, 
+                                        calories : calories}};
+                           items.push(item); 
+                        });
+                        console.log(items);
+                    }
+                })
+                // enable the input
+                $('#target').removeAttr("disabled");
+             
+                // setup autocomplete options
+                var options = {
+                    source : selectEntries,
+                    select : makeSelection
+                };
+                $('#target').autocomplete(options);
+            });
+            
+            // request.term -- user entry
+            // callback -- to return array of values
+            function selectEntries (request, callback) {
+                console.log(items);
+                console.log(request.term);
+                var result = [];
+                // filter the data for matching entries
+                result = $.grep(items,
+                    function(value, index) {
+                        return  (value.label.toLowerCase().indexOf(
+                            request.term.toLowerCase()) > -1);
+                });
+               // return the results
+               console.log(result);
+               callback(result);
+            }
+            // when a selection is make
+            function makeSelection(event, ui) {
+                console.log(ui.item);
+                $('#Name').val(ui.item.data.name);
+                $('#Serving').val(ui.item.data.size);
+                $('#Calories').val(ui.item.data.calories);
+            }
+        </script>
+    </head>
+    <body>
+        <h2>JQuery Nutrition Autocomplete</h2>
+        <div class="ui-widget">
+            <label for="target">Name: </label>
+            <input id="target" size="60"/>
+            <p></p>
+            <label for="Name">Name: </label>
+            <output id="Name"></output>
+            <p></p>
+            <label for="Serving">Serving: </label>
+            <output id="Serving"></output>
+            <p></p>
+            <label for="Calories">Calories:</label>
+            <output id="Calories"></output>
+            <p></p>
+        </div>
+
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
